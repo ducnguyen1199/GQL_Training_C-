@@ -1,3 +1,5 @@
+using GraphQL.Server;
+using GraphQL.Server.Ui.Playground;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -7,18 +9,26 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Training.Data.Repository;
+using Training.GraphQL.API.GraphQL.GraphQLSchema;
 
 namespace Training.GraphQL.API
 {
     public class Startup
     {
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+
+            services.AddScoped<AppSchema>();
+            services
+                .AddGraphQL()
+                .AddSystemTextJson()
+                .AddGraphTypes(typeof(AppSchema), ServiceLifetime.Scoped);
+
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -28,13 +38,9 @@ namespace Training.GraphQL.API
 
             app.UseRouting();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapGet("/", async context =>
-                {
-                    await context.Response.WriteAsync("Hello World!");
-                });
-            });
+            app.UseGraphQL<AppSchema>();
+
+            app.UseGraphQLPlayground(options: new GraphQLPlaygroundOptions());
         }
     }
 }
