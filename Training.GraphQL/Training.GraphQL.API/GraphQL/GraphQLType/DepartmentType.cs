@@ -1,8 +1,4 @@
 ﻿using GraphQL.Types;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Training.Data.Models;
 using Training.Data.Repository;
 
@@ -10,10 +6,15 @@ namespace Training.GraphQL.API.GraphQL.GraphQLType
 {
 	public class DepartmentType : ObjectGraphType<Department>
 	{
-		public DepartmentType()
+		public DepartmentType(IUserRepository userRepository)
 		{
-			Field(x => x.Id, type: typeof(IdGraphType)).Description("Id of Deparment.");
-			Field(x => x.Name).Description("Name of Deparment.");
+			Field(x => x.Id, type: typeof(IdGraphType)).Description("Id of Department.");
+			Field(x => x.Name).Description("Name of Department.");
+			Field<ListGraphType<UserType>>(
+				"users",
+				Description = "Users in Department",
+				resolve: context => userRepository.GetByDepartmentId(context.Source.Id)
+			);
 		}
 	}
 }

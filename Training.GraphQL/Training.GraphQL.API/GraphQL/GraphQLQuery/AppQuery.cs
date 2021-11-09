@@ -39,7 +39,7 @@ namespace Training.GraphQL.API.GraphQL.GraphQLQuery
                resolve: context => departmentRepository.GetAll()
             );
             Field<DepartmentType>(
-                "department",
+              "department",
               arguments: new QueryArguments(new QueryArgument<NonNullGraphType<IdGraphType>> { Name = "Id"}),
               resolve: context => 
               {

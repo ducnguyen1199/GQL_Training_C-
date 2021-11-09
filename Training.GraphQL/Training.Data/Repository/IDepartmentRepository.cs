@@ -9,5 +9,8 @@ namespace Training.Data.Repository
 	{
 		IEnumerable<Department> GetAll();
 		Department GetById(long id);
+		Department CreateDepartment(Department user);
+		Department UpdateDepartment(Department newUser);
+		String DeleteDepartment(Department user);
 	}
 }

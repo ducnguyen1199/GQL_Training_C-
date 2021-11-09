@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
 
 namespace Training.Data.Models
 {
@@ -11,8 +8,8 @@ namespace Training.Data.Models
 		[Key]
 		public long Id { get; set; }
 		public string Name { get; set; }
+		[ForeignKey("DepartmentId")]
 		public long DepartmentId { get; set; }
-		[ForeignKey("RoleId")]
 		public Department Department { get; set; }
 	}
 }

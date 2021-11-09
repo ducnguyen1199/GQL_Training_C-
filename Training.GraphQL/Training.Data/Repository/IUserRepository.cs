@@ -9,6 +9,7 @@ namespace Training.Data.Repository
 	{
 		IEnumerable<User> GetAll();
 		User GetById(long id);
+		IEnumerable<User> GetByDepartmentId(long id);
 		User CreateUser(User user);
 		User UpdateUser(User newUser);
 		String DeleteUser(User user);

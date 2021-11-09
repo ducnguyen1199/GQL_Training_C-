@@ -1,10 +1,7 @@
 ﻿using GraphQL;
-using GraphQL.Instrumentation;
 using GraphQL.Types;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Training.Data.Models;
 using Training.Data.Repository;
 using Training.GraphQL.API.GraphQL.GraphQLInput;
@@ -18,19 +15,15 @@ namespace Training.GraphQL.API.GraphQL.GraphQLMutation
 		{
             Field<UserType>(
             "createUser",
-            arguments: new QueryArguments
-            (
-                new QueryArgument<NonNullGraphType<UserInputType>> { Name = "input" }
-            ),
+            arguments: new QueryArguments(new QueryArgument<NonNullGraphType<UserInputType>> { Name = "input" }),
             resolve: context =>
             {
                 var input = context.GetArgument<User>("input");
 
                 User user = new User
                 {
-                    Id = userRepository.GetAll().Max(u => u.Id) + 1,
                     Name = input.Name,
-                    DepartmentId = input.DepartmentId
+                    DepartmentId = input.DepartmentId,
                 };
 
                 return userRepository.CreateUser(user);
@@ -74,6 +67,60 @@ namespace Training.GraphQL.API.GraphQL.GraphQLMutation
                 }
 
                 return userRepository.DeleteUser(user);
+            });
+
+            Field<DepartmentType>(
+            "createDepartment",
+            arguments: new QueryArguments(new QueryArgument<NonNullGraphType<StringGraphType>> { Name = "name" }),
+            resolve: context =>
+            {
+                var name = context.GetArgument<string>("name");
+
+                Department department = new Department
+                {
+                    Name = name,
+                };
+
+                return departmentRepository.CreateDepartment(department);
+            });
+
+            Field<DepartmentType>(
+            "updateDepartment",
+            arguments: new QueryArguments
+            (
+                new QueryArgument<NonNullGraphType<LongGraphType>> { Name = "id" },
+                new QueryArgument<NonNullGraphType<StringGraphType>> { Name = "name" }
+            ),
+            resolve: context =>
+            {
+                var id = context.GetArgument<long>("id");
+                var name = context.GetArgument<string>("name");
+
+                Department department = departmentRepository.GetById(id);
+                department.Name = name;
+
+                return departmentRepository.UpdateDepartment(department);
+            });
+
+            Field<StringGraphType>(
+            "deleteDepartment",
+            arguments: new QueryArguments
+            (
+                new QueryArgument<NonNullGraphType<LongGraphType>> { Name = "id" }
+            ),
+            resolve: context =>
+            {
+                var id = context.GetArgument<long>("id");
+
+                Department department = departmentRepository.GetById(id);
+
+                if (department == null)
+                {
+                    context.Errors.Add(new ExecutionError($"Not found Department by Id = {id}"));
+                    return null;
+                }
+
+                return departmentRepository.DeleteDepartment(department);
             });
         }
 	}

@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Training.Data.Models
 {
@@ -10,5 +9,6 @@ namespace Training.Data.Models
 		[Key]
 		public long Id { get; set; }
 		public string Name { get; set; }
+		public ICollection<User> Users { get; set; } = new List<User>();
 	}
 }

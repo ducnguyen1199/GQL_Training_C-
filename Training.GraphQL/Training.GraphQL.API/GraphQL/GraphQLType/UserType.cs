@@ -1,8 +1,4 @@
 ﻿using GraphQL.Types;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Training.Data.Models;
 using Training.Data.Repository;
 
@@ -16,7 +12,7 @@ namespace Training.GraphQL.API.GraphQL.GraphQLType
 			Field(x => x.Name).Description("Name of User");
 			Field(x => x.DepartmentId).Description("Id of Department");
 			Field<DepartmentType>(
-				"departments",
+				"department",
 				Description = "Department Obj",
 				resolve: context => departmentRepository.GetById(context.Source.DepartmentId)
 			);
